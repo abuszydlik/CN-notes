@@ -146,3 +146,34 @@ On network layer it is possible to distinguish two types of service:
    * all packets that are part of the connection follow this route;
    * ISPs sometimes use this on top of IP;
    * QoS and congestion control are easy if resources can be allocated.
+
+**Properties for routing**:
+1. Correctness
+2. Simplicity
+3. Robustness
+4. Stability
+5. Fairness
+6. Efficiency
+
+*Optimality principle in sink trees* - if the best route from C to A goes through B, then B to A follows the same path; collection of all best paths to a given destination forms a _tree_ (benchmark for real implementations).
+
+*Routing table* - is a table in memory of the router which for every address stores the data about the distance and link that should be chosen to forward the packet.
+
+
+**Routing algorithms**:
+* distance vector routing:
+   1. send your _distance vector_ (information about links to other machines) to your neighbours;
+   2. use incoming distance vectors from neighbours to construct (or update) a routing table;
+   3. if something goes wrong (link goes out) -> _count to infinity problem_ - very slow updates.
+* link state routing (more complicated but no _count to infinity_):
+   1. routers only send packets with information about their direct neighbours;
+   2. packets are flooded over the network;
+   3. routers build in parallel their overview of the network using _Dijkstra's algorithm_;
+   4. requires sequence numbers because packets can get mixed during flooding.   
+* hierarchical routing (reduces routing table size for large networks):
+   1. routers get connected into clusters;
+   2. information about how to transmit to a particular cluster is stored in a routing table.
+   
+**Congestion control**:
+_Flow control_ on **data link** layer makes sure that a sender does not send information faster than it can be received. End-to-end _congestion control_ is a joint responsibility of the **network** and **transport** layers.
+
