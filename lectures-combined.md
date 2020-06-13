@@ -356,3 +356,37 @@ Most popular protocols of transport layer are ***UDP*** and ***TCP*** (but other
 | Compound TCP | Packet loss & end-to-end delay| No            | Yes          |used in Windows|   
 | CUBIC TCP    | Packet loss                   | No            | No           |used in Linux  |
 | TCP          | Packet loss                   | No            | No           |               |
+
+**Domain Name System** translates _human readable names_ to IP addresses:
+* domains follow a hierarchical structure; top level domains are assigned by _ICANN_ and organizations can request second-level domains from _registrars_.
+* translation happens at a ***name server*** whose location is configured with _DHCP_ (or manually).
+* there are two types of queries to DNS:
+   * recursive queries - machine communicates with a _local name server_ which either serves the IP address or queries other name servers hierarchically (first asks _root name server_)
+   * iterative queries - _local name server_ provides the address of _root name server_ to the machine which then has to query other name servers hierarchically (computation put on the local machine)/
+* name servers reply with ***domain resource records**:
+   * IPv4 address (type A);
+   * IPv6 address (type AAAA);
+   * domain that accepts email (type MX);
+   * name server for this domain (type NS).
+
+**Email**:
+* messages contain a header (from, to, subject), a body (text) and an envelope (data to get mail delivered).
+* _POP3_ and _IMAP_ are used to interact with the mailbox, IMAP is newer and doesn't delete mail on server.
+* users and _message transfer agents_ use _SMTP_ with Extensions to get mail from source to destination.
+* email address is resolved to IP with DNS.
+
+**Simple Mail Transfer Protocol** is ASCII-based and in basic version doesn't support binary data and authentication. **Multipurpose Internet Mail Extensions** are additional headers for transfering different types of data (text, images, video, multipart). When it was introduced servers were not expecting non-ASCII data so all binary streams are encoded Base64 (\[A-Za-z0-9+/]) where 6 bits are translated into 1 character (if the number of bits in bitstream isn't divisible by 6 it is padded with 00's represented with "=").
+
+**Internet Message Access Protocol** sends commands to mail server to manipulate mailboxes, commonly:
+* LOGIN - log into server;
+* FETCH - fetch messages from a folder;
+* CREATE/DELETE - create or delete a folder;
+* EXPUNGE - remove messages marked for deletion.
+
+When logging into mail server through a webpage WWW (so HTTP or HTTPS) is used instead of POP3/IMAP.
+
+**World Wide Web** is managed in form by W3C, it works as an exchange of HTTP requests and responses. _Persistent connections_ allow browsers to issue multiple requests over the same TCP connection, moreover requests can also be pipelined. Web uses **Universal Resource Locators** powered by DNS which specify the _protocol_, _domain name_, and a _path_ to resource.
+
+Browsers use MIME type to decide what to do with data:
+* text/html is rendered;
+* other data is passed to a plugin or another app.
