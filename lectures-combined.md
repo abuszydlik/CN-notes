@@ -436,3 +436,75 @@ Browsers use MIME type to decide what to do with data:
    * nodes also keep track of m other nodes in a table to make the system faster.
    * DHT lookup table is called a _finger table_ where entries are calculated `successor(start + 2^i)`.
    
+## Network security
+
+**Safety** is ability of the system to protect from random failures.
+**Security** is protection from intentional attacks.
+**Privacy** is security related to personally identifiable information.
+**Trust** describes a party that can generally be assumed to be honest.
+
+**CIA triad**:
+* confidentiality - only authorized parties have access to information/system.
+* integrity - guarantees that data has not been manipulated.
+* availability - system or data is there whenever needed.
+
+**Attacker model** describes attacker's goal and limitations:
+* ***passive*** (observes but does not manipulate, Eve) vs ***active*** (manipulates, Mallory)
+* ***external*** (doesn't participate in the system) vs ***internal*** (participant)
+* ***local*** (present in a part of the system) vs ***global*** (present in the whole system)
+* ***static*** (stays the same over time) vs ***adaptive*** (changes behavior based on new info)
+* ***unlimited computational power*** - no limit on resources (information-theoretically secure protocols)
+* ***polynomially bounded computational power*** - some limit, usual case (computationally secure protocols)
+
+In **Dolev-Yao model*** attacker is polynomially bounded and can:
+* overhear
+* modify
+* drop
+* replay
+* delay
+* create
+messages in the system.
+
+**Cryptosystem** - set of algorithms that guarantee security properties.
+**Cryptographic key** - parameter that determines which algorithm to use.
+**Cryptography** - creating cryptosystems.
+**Cryptoanalysis** - breaking cryptosystems.
+**Cryptology** - combines cryptography and cryptoanalysis
+**Cipher** - cryptosystem for encryption
+**Plaintext** - original message M
+**Ciphertext** - original message after an encryption process `C = Enc(K1, M)` and `M = Dec(K2, C)`.
+
+**Kerckhoff's principle** - security should not depend on secrecy of algorithm but on the keys.
+There are two types of ciphers: _substitution_ (changes) and _transposition_ (reorders), transposition cyphers are generally less secure so they are usually used in combination with substitution cyphers.
+
+**Symmetric-key encryption**:
+1. both parties share the same encryption and decryption key, it has to be agreed upon before transmission.
+2. both key and message are encrypted by party A.
+3. party B decrypts the ciphertext to extract the message.
+
+Symmetric-key algorithms can be divided into
+* stream cyphers - encrypt each bit in the stream
+* block cyphers - divide input into blocks and apply encryption on the blocks
+
+**One-Time Pad**:
+1. create _random_ bit string as key.
+2. convert message into a bit string.
+3. XOR both strings to obtain cipher.
+4. XOR ciphertext with key to decrypt.
+
+**Pseudo-Random Number Generator** takes a short seed and generates a number, it is deterministic
+
+**Approximate One-Time Pad**
+1. Alice chooses a _nonce_ which can be public and will be used once for randomization.
+2. Alice XORs the nonce with a key and uses it as a seed in PRNG.
+3. Alice XORs message and generator output.
+4. Alice sends the ciphertext and nonce to Bob.
+5. Bob XORs key with nonce and feeds it into PRNG and then XORs the output with cipher to obtain message.
+
+**Cipher modes**:
+* Electronic Code Book - Alice divides the message into blocks and applies encryption independently.
+* Cipher Block Chaining - Alice XORs the first block with an _initial vector_ (which will be also sent to Bob), encrypts the result and feeds it as vector to XOR with the next block (has to run in single thread).
+* Counter - Alice chooses an _initial vector_ and concatenates it with a counter (incremented for each block), IV+Counter is encrypted with the key and then XORed with the message (parallelizable).
+* there exist more modes.
+
+`B-Enc` (block encryption) boxes are made out of `P-boxes` (permutation) and `S-boxes` (substitution).
