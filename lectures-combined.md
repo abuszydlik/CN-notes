@@ -175,5 +175,81 @@ On network layer it is possible to distinguish two types of service:
    2. information about how to transmit to a particular cluster is stored in a routing table.
    
 **Congestion control**:
-_Flow control_ on **data link** layer makes sure that a sender does not send information faster than it can be received. End-to-end _congestion control_ is a joint responsibility of the **network** and **transport** layers.
+_Flow control_ on **data link** layer makes sure that a sender does not send information faster than it can be received. End-to-end _congestion control_ is a joint responsibility of the **network** and **transport** layers. _Goodput_ is the rate of useful (without repeats and errors) packets arriving at the receiver.
 
+**Congestion control approaches**:
+* network provisioning - increase available bandwidth.
+* traffic-aware routing - choose routes depending on traffic and not only topology.
+* admission control - new traffic load is allowed only if the network has sufficient capacity (can be combined with looking for an alternative uncongested route).
+* traffic throttling - send messages (choke signal) in opposite direction to indicate network congestion for example with special bits in IP (*Explicit Congestion Notification*) packet or through TCP; can be done end-to-end or link-by-link depending on implementation.
+* load shedding - if there is a risk of total network failure packets start getting dumped on overloaded routers (packet loss is implicit signal for the sender to slow down); this is called *Random Early Detection*.
+
+**Quality of service**:
+* bandwidth - maximum data rate in bits per second (file sharing, VOD).
+* delay - time it takes to get from source to destination (telephony, videoconferencing)
+* jitter - variation in packet delay where 0 means constant delay (AOD, VOD, telephony, videoconferencing).
+* packet loss - probability of packets being dropped
+* contract negotiation*
+
+|      Network service      |   application   |
+|--------------------------:|----------------:|
+|    constant bit rate      |    telephony    |
+|real-time variable bit rate|videoconferencing|
+|non-real-time var. bit rate|streaming movies |
+|     available bit rate    |  file transfer  | 
+
+Network services are configurations of QoS. To give guarantees, network needs to be able to control:
+* data rate;
+* packet scheduling;
+* admission control.
+
+_Traffic shaping_ regulates rate and burstiness of data entering the network:
+* leaky bucket - constant rate and maximum size of queue
+* token bucket - enables regulating bursts
+
+_Internetworking_ is getting packets from source to destination through different networks:
+* they may use different protocols
+* they may have different QoS guarantees
+* they may have different maximum packet sizes
+
+If source and destination networks use the same protocols then _tunneling_ is possible (network is hidden). When networks have different maximum packet size; the minimal largest size of packets on a route is called Path Maximum Transmission Unit. _Packet fragmentation_ can be done:
+* transparently - reassembled by the router on the other side of the link (very complex).
+* nontransparent - packets need to be reassembled at the destination.
+* MTU discovery - when a packet is too large for a router it is refused and the source is required to fragment in (used in IP).
+
+**IPv4**:
+* 13 mandatory fields and one optional field.
+* time to live - used to avoid loops in the network, normally counts the number of hops.
+* identification - bookkeeping for fragmentation.
+* IPv4 addresses are 32-bit written in _dotted decimal notation_.
+* routing table sizes are reduced with _hierarchical routing_.
+
+Example address 37.60.0.0/16 means that 16 bits are used by the network (subnet mask) and last 16 bits belong to host addresses.
+
+**Classless InterDomain Routing** is used to manage hierarchy in routing tables (_route aggregation_).
+**Network Address Translation** limits the use of IP addresses (only 4 billion) by creating an internal IP scheme for all devices connected to a single router (which has an external address). NAT is implemented with ports (NAT box keeps a table of source-destination links). Smartphones use _carrier-grade NATs_ implemented at telecom level.
+
+**IPv6**:
+* only 8 fields + some options (improved bandwidth and latency).
+* easier to add _options in the header_.
+* many more addresses (128-bits in hexadecimal notation).
+* improved security capabilitites.
+
+**Internet Control Message Protocol** - when something goes wrong, routers send these messages to the senders. Possible use cases include destinatio unreachable, time exceeded (`traceroute`), echo and echo reply (`ping`), and router advertisment/solicitation.
+
+**Address Resolution Protocol**:
+1. Sender doesn't know who owns an IP address.
+2. Sender broadcasts over Ethernet an ARP packet.
+3. Owner replies with an ARP packet containing its IP and MAC addresses (vulnerable to spoofing).
+
+**Dynamic Host Configuration Protocol**:
+1. Sender doesn't know its own address (only MAC addresses are built into NICs)
+2. Sender without an IP requests to get one assigned by sending a "DHCP discover" packet.
+3. When DHCP server receives the "discover" packet, it offers an available address (broadcast).
+4. Also used to configure mask, default gateway, DNS, time servers, etc.
+
+**MultiProtocol Label Switching** is a routing algorithm which uses short labels instead of long network addresses, at each hop labels need to be replaced (basically circuit switching + tunelling). Routers that use only IP are called _label edge routers_, while the ones using labels are called _label switched routers_. MPLS used for example by ISPs (lack of transparency). 
+
+**Open Shortest Path First** is an _Interior Gateway Protocol_ used for routing ***within*** a large independent network; a form of link state routing (graph representation of the network) and uses a hierarchy of _areas_ to manage networks.
+
+**Border Gateway Protocol** is an _Exterior Gateway Protocol_ used for routing ***between*** independent networks (supports arbitrary policies by ISPs, companies or countries); a form of distance vector routing combined with path vector routing.
