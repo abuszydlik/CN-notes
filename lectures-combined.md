@@ -357,6 +357,8 @@ Most popular protocols of transport layer are ***UDP*** and ***TCP*** (but other
 | CUBIC TCP    | Packet loss                   | No            | No           |used in Linux  |
 | TCP          | Packet loss                   | No            | No           |               |
 
+## Application layer 
+
 **Domain Name System** translates _human readable names_ to IP addresses:
 * domains follow a hierarchical structure; top level domains are assigned by _ICANN_ and organizations can request second-level domains from _registrars_.
 * translation happens at a ***name server*** whose location is configured with _DHCP_ (or manually).
@@ -390,3 +392,47 @@ When logging into mail server through a webpage WWW (so HTTP or HTTPS) is used i
 Browsers use MIME type to decide what to do with data:
 * text/html is rendered;
 * other data is passed to a plugin or another app.
+
+**Content Delivery Networks** are a type of caching to increase system scalability. Original server that provides the content is replicated to several regional servers; front end distributes the load. CDNs are powered by DNS, one of the largest CDN providers is Akamai.
+
+**Streaming audio and video**  require compression which can be done without loss becase some differences are impossible to perceive by humans. _MPEG_ is used to compress videos over several frames:
+* Intra-coded frames are self-contained;
+* Predictive frames store changes to previous frame;
+* Bidirectional frames may base prediction of previous and future frames.
+
+**How streaming applications work**:
+* streaming stored media (Netflix, YouTube):
+   * browser sends a ***metafile request*** via HTTP to the server, metafile obtained in response is handed to the media player which sends a ***media request*** via RTSP to media server which responds via TCP or UDP
+   * transmission errors are either (a) avoided by using reliable transport, (b) recovered with error correction or (c) interleaved media is used (frames of different media sources are interleaved so possible errors are less noticeable)
+   * buffer has low-water mark (prevents stalls) and high-water mark (prevents running out of space)
+* streaming live media (Twitch):
+   * similar problems to stored case
+   * can't stream faster than live rate so a larger buffer is needed to absorb jitter
+   * often many users are viewing at the same time (flash mobs), UDP with multicast is ideal but often multiple TCP connections are needed
+* streaming interactive media (Skype):
+   * instabilities on the network are balanced by adaptable compression loss rate
+   
+**Peer-to-peer systems**:
+* implemented instead of relying on a _central infrastructure_.
+* users create their own infrastructure by connecting to each other.
+* scalable by design.
+
+**Napster (original idea)**:
+1. user A asks a central server which user has a particular file.
+2. server responds with IP and port number of user B.
+3. user A asks user B for the file.
+4. user B sends the file to user A.
+
+**BitTorrent**:
+1. user A downloads a description of the required file.
+2. user A gets their peers from a central authority called a _tracker_.
+3. user A starts trading chunks of the file with their peers until a file is completed.
+
+**Distributed Hash Tables** are a way to decentralize the _tracker_:
+* Chord DHT:
+   * create a ring with 2^m places where each user can choose their position.
+   * peers for torrent t are stored at user `successor(hash(t))`.
+   * nodes keep track of the next node on the ring (on average half of the nodes need to be contacted).
+   * nodes also keep track of m other nodes in a table to make the system faster.
+   * DHT lookup table is called a _finger table_ where entries are calculated `successor(start + 2^i)`.
+   
