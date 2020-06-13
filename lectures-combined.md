@@ -253,3 +253,53 @@ Example address 37.60.0.0/16 means that 16 bits are used by the network (subnet 
 **Open Shortest Path First** is an _Interior Gateway Protocol_ used for routing ***within*** a large independent network; a form of link state routing (graph representation of the network) and uses a hierarchy of _areas_ to manage networks.
 
 **Border Gateway Protocol** is an _Exterior Gateway Protocol_ used for routing ***between*** independent networks (supports arbitrary policies by ISPs, companies or countries); a form of distance vector routing combined with path vector routing.
+
+## Transport layer
+Responsible for a _reliable_ (or sometimes _unreliable_) data stream over an _unreliable_ network. Transport protocols are run only on the end machines, smallest message entities of TCP are segments.
+1) Transport Service Access Point (ports) are used by applications to communicate with transport layer.
+2) Network Service Access Points (IP addresses) are used for communication with network layer.
+
+**Primitives used to connect TSAP and NSAP**:
+* listen - wait for a process to contact us.
+* connect - connect to a process that is listening.
+* send - transmit data over the established connection.
+* receive - receive data over the established connection.
+* disconnect (close) - release the connection.
+
+**Berkeley Socket primitives** used by TCP include primitives above and additionally:
+* socket - create a new communication endpoint.
+* bind - assign a local address to the socket.
+* accept - passively accept an incoming connection request.
+
+**Process server** is used to limit use of resources for applications that only need to be connected to a port from time to time, additional servers are started only when needed and connection is passed to them.
+**Multiplexing** is used to handle multiple transport connections over one network connection, **inverse multiplexing** is used to split one transport connection over multiple network connections (it requires machines which are capable of handling more than one network connection at a time - IP limited).
+
+**Reliability problems**:
+* data loss (even if links are reliable, routers can still drop packets)
+* retransmission can result in duplicate segments (links have different latencies)
+
+**Sequence numbers**:
+* need to ensure that duplicates are discarded and there are no false positives.
+* initial sequence number is based on _time-of-day clock_ (keeps working even in case of crashes).
+* sequence number `S(i) = S(i-1) + #bytesSent`.
+* sequence numbers which at some particular time cannot be chosen (because a packet with that number can still be in the network) belong to the _forbidden region_, in TCP sequence numbers need to be renegotiated after around four hours.
+
+**Three-way handshake** is used to negotiate initial connection:
+1. Party A sends a _connection request_ containing its initial sequence number `x`.
+2. Party B sendes an _ack_ containing acknowledgement of `x` and its initial sequence number `y`.
+3. Party A can start sending data and acknowledges `y`.
+4. In case of duplicates a _reject_ signal can be transmitted, non-duplicate continues normally.
+
+**Connection release** needs to happen when the exchange is finished:
+* asymmetrically - either participants finishes without agreement, can result in data loss
+* symmetrically -> _two armies problem_ (no certain way to know whether parties have reached agreement):
+   1) party A asks to release connection.
+   2) party B agrees to release connection.
+   3) party A sends an ack to party B.
+   4) party A ends the connection
+   5) if party B receives an ack it ends the connection as well, if not it will realize after some time.
+   
+**Error control and crash recovery** must be done on the application layer (in general recovery from layer `k` failure must be done by layer `k + 1`.
+**Flow vs. congestion control** - there are two sources of troubles on the transport layer:
+* small capacity receiver - sender needs to slow down -> flow control.
+* small capacity network - network needs to provide feedback -> congestion control.
