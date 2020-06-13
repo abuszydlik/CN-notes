@@ -278,7 +278,7 @@ Responsible for a _reliable_ (or sometimes _unreliable_) data stream over an _un
 * data loss (even if links are reliable, routers can still drop packets)
 * retransmission can result in duplicate segments (links have different latencies)
 
-**Sequence numbers**:
+**Sequence numbers** are used to detect data loss, detect duplicates, and reorder data:
 * need to ensure that duplicates are discarded and there are no false positives.
 * initial sequence number is based on _time-of-day clock_ (keeps working even in case of crashes).
 * sequence number `S(i) = S(i-1) + #bytesSent`.
@@ -299,7 +299,60 @@ Responsible for a _reliable_ (or sometimes _unreliable_) data stream over an _un
    4) party A ends the connection
    5) if party B receives an ack it ends the connection as well, if not it will realize after some time.
    
-**Error control and crash recovery** must be done on the application layer (in general recovery from layer `k` failure must be done by layer `k + 1`.
+**Error control and crash recovery** must be done on the application layer (in general recovery from layer `k` failure must be done by layer `k + 1`).
 **Flow vs. congestion control** - there are two sources of troubles on the transport layer:
 * small capacity receiver - sender needs to slow down -> flow control.
 * small capacity network - network needs to provide feedback -> congestion control.
+
+**Flow control** prevents a sender from overwhelming the receiver:
+* tightly linked to the buffer management at the receiver:
+   1. while connection is being set up, receiver _piggybacks_ a message about its buffer size;
+   2. sender sends a message of M bytes;
+   3. after each message, receiver sends the maximal size of message it can accept (current buffer).
+* messages about buffer size are always piggybacked.
+
+**Congestion control** - transport layer takes care of _offered load_ (on top of network and transport)
+
+**Fair bandwidth allocation**:
+* supposed to minimize the differences between bandwidth offered to different users in the network
+* often _max-min fairness_  which is supposed to maximize minimum bandwidth and use excess where possible.
+* when new connections are added, the bandwidth needs to be reallocated (convergence is difficult because total available bandwidth, network topology and other clients are unknown).
+* dynamically adjusting bandwidth using trial and error:
+   1. start sending while slowly increasing the usage;
+   2. once a congestion signal (feedback/loss/latency) is detected, the machine slows down.
+* finding optimum (fair and efficient) when sharing bandwidth can be done additively, multiplicatively or as a combination of both -> TCP often uses additive increase and multiplicative decrease.
+
+Most popular protocols of transport layer are ***UDP*** and ***TCP*** (but others exist - Google's QUIC).
+
+**User Datagram Protocol**:
+* header provides ports needed to connect to remote applications.
+* only four header fields (source port, destination port, UDP length, UDP checksum).
+* very basic error control.
+* does not provide flow control, congestion control and retransmissions.
+* works well with multiplayer games, VoIP, video streaming (a lot faster than TCP).
+* described in RFC768
+
+**Transmission Control Protocol**:
+* provides a ***reliable end-to-end byte stream*** over an unreliable network.
+* header includes fields similar to UDP but also sequence number and ack number.
+* in total number of header fields is 15 + options and data.
+* more than 10 RFCs and a summary in RFC4614.
+
+**TCP implementations**:
+* every data byte has its own sequence number, based on clock with additional randomization.
+* performance improvement by fast retransmission - resend immediately when acks come out of order.
+* in three-way handshake original number `x` is acknowledged as `x+1` (all subsequent SN larger by one).
+* in flow control if a window size is 0, then the sender stops sending and waits for a next ack
+* original version uses additive decrease with multiplicative decrease using congestion window on the sender (specifies how many segments can be transmitted and dynamically adapts to network flow with ack rate):
+   * _TCP Tahoe_ uses _slow start_ - for every ack sender transmits two packets, up to an arbitrary treshold the bandwidth grows exponentially, then switches to additive increase (packet loss resets window);
+   * _TCP Reno_ couples slow start with fast recovery (window is set only to new treshold);
+   * new versions of TCP use different variation of the same idea
+   
+|   Protocol   |            Signal             |   Explicit?   |   Precise?   |    Remarks    |
+|-------------:|------------------------------:|--------------:|-------------:|--------------:|
+| XCP          | Rate to use                   | Yes           | Yes          |               |
+| TCP with ECN | Congestion warning            | Yes           | No           |               |
+| FAST TCP     | End-to-end delay              | No            | Yes          |               |
+| Compound TCP | Packet loss & end-to-end delay| No            | Yes          |used in Windows|   
+| CUBIC TCP    | Packet loss                   | No            | No           |used in Linux  |
+| TCP          | Packet loss                   | No            | No           |               |
