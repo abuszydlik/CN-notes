@@ -508,3 +508,81 @@ Symmetric-key algorithms can be divided into
 * there exist more modes.
 
 `B-Enc` (block encryption) boxes are made out of `P-boxes` (permutation) and `S-boxes` (substitution).
+
+### Symmetric-key standards
+**Data Encryption Standard**:
+* 64-bit input and output
+* effective key length of 56 bits
+* used to be a standard from 1977 but was broken in late 90s
+* Triple DES - modern variation of the standard, uses sequence ENC -> DEC -> ENC with three different keys
+
+**Advanced Encryption Standard (Rijndael)**
+* symmetric block cipher
+* completely public design and algorithms
+* key lengths of 128, 192, and 256 bits
+* implementation possible in hardware and software
+
+### Asymmetric-key encryption (different keys for encryption and decryption)
+Every user has a _public key_ and corresponding _secret key_; sender looks up the public key and encrypts the message, receiver is able to decrypt the message only with their private key
+
+**RSA Key Generation**:
+1. Choose two large primes `p` and `q.
+2. Compute `n = p * q` and `phi(n) = (p - 1) * (q - 1)`.
+3. Choose a number `d`, relatively prime to `phi(n)`.
+4. Find `e` such that `e * d = 1 mod phi(n)`.
+
+Then (e, n) is _public key_ and (d, p, q) is the private key.
+
+**RSA encryption and decryption**:
+* encrypt M - `C = M^e mod n`
+* decrypt C - `M = C^d mod n`
+
+This is a textbook algorithm (actual implementations include randomization).
+
+**Hybrid encryption** is used because asymmetric-key algorithms are a lot slower:
+1. Alice chooses her secret key.
+2. Alice looks up Bob's public key.
+3. Alice encrypts her secret key with Bob's public key and sends it to Bob.
+4. Actual message is encrypted and decrypted with (now) shared symmetric secret key.
+
+**Diffie-Hellman key exchange**:
+1. Variables `g` and `n` (computations are mod n) are publicly known.
+2. Alice chooses secret `x` and sends `g ^ x` to Bob.
+3. Bob chooses secret `y` and sends `g ^ y` to Alice.
+4. Alice and Bob can compute key `k = g ^ (xy)` which they now share.
+
+**Data integrity** - verifies that received data is correct.
+**Authentication** - verifies identity.
+**Anonymity** - ability to hide identity.
+**Non-repudiation** - inability to refuse the validity of a statement.
+
+**Message Authentication Codes** ensure data integrity, authentication and repudiation:
+1. Alice and Bob have a shared secret key.
+2. Alice computes the MAC with key and message and sends it to Bob.
+3. Bob recalculates the MAC and verifies whether it is the same as one sent by Alice.
+
+MACs build on _cryptographic hash functions_ which need several properties:
+* collision resistance - ideally impossible (non-feasible) to find `x != y` so that `h(x) = h(y)`.
+* preimage resistance - given `z` it is hard to find `x` so that `h(x) = z`.
+* second preimage resistance - given `x` and `z = h(x)` it is hard to find `x != y` so that `h(y) = z`.
+
+where hard means _computationally secure_.
+
+**Hash functions**:
+* MD5 - first collisions found in 2004.
+* SHA1 - first collision found in 2017.
+* SHA2 - no collisions found yet but it has other vulnerabilities.
+* SHA3 - latest standard since 2015.
+
+**Digital Signatures** ensure data integrity, authentication and non-repudiation:
+1. Alice signs a message with her secret key.
+2. Alice sends message and the result of her _sign function_ (digital signature) to Bob.
+3. Bob looks up Alice's public key.
+4. Bob executes _verify function_ on the message and signature with Alice's public key.
+5. Output of verify function informs whether the signature was not manipulated.
+
+RSA can be used for signatures as well.
+
+**Hash-then-Sign** is faster than calculating a signature on the full message, only the hash function output is signed by Alice. Bob can verify the same way because hash functions are public.
+
+
