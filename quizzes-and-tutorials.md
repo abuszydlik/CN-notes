@@ -241,3 +241,83 @@ c)Tag heist
 d)Token ring
 
 ***Answer c, tag heist***
+
+## Tutorial 2
+
+**Question 1**
+What does the routing table of A look like?
+
+|      to      |      line      |      cost      |
+|-------------:|---------------:|---------------:|
+|       A      |        -       |        0       |
+|       B      |        C       |       11       |
+|       C      |        C       |        8       |
+|       D      |        C       |        9       |
+|       E      |        E       |        2       |
+|       F      |        E       |        6       |
+|       G      |        G       |       11       |
+
+**Question 2**
+How would the routing table change if the delay to G is 12 rather than 11?
+
+|      to      |      line      |      cost      |
+|-------------:|---------------:|---------------:|
+|       A      |        -       |        0       |
+|       B      |        C       |       11       |
+|       C      |        C       |        8       |
+|       D      |        C       |        9       |
+|       E      |        E       |        2       |
+|       F      |        E       |        6       |
+|       G      |        G       |     **12**     |
+
+***In the new scenario line to G can be either E or G depending on the implemented policy***
+
+**Question 3**
+
+Consider the following network:
+
+(A)--1--(B)--5--(C)
+
+What happens if C becomes unresponsive after nodes have constructed their routing tables? Can you think of changes to thea lgorithm that will prevent the issue?
+
+***If C becomes unresponsive then the change in network structure will be very slowly communicated in routing tables of A and B (count to infinity problem). One possible solution (if distance vector routing has to be used) would be creating an arbitrary cutoff value for the cost, above which it is understood that a node is simply unavailable. Another idea would be to detect update loops.***
+
+**Question 4**
+
+**Question 5**
+
+|      to      |      line      |      cost      |
+|-------------:|---------------:|---------------:|
+|       A      |        F       |        6       |
+|       B      |        H       |        5       |
+|       C      |        -       |        -       |
+|       D      |        I       |        6       |
+|       E      |        F       |        4       |
+|       F      |        F       |        3       |
+|       H      |        H       |        2       |
+|       I      |        I       |        3       |
+
+**Question 6**
+
+***If H becomes unresponsive then it is removed from the routing table, additionally B whose shortest path led through H has a new path calculated through F with cost 9.***
+
+**Question 7**
+
+***0.0.0.0/0 is default gateway, it covers all addresses unsupported by other routers;   
+Leonardo covers addresses 101.45.6.0 to 101.45.6.255; Michelangelo covers the address 101.6.0.3.   
+Therefore:
+101.6.0.3 -> Michelangelo
+101.6.0.4 -> Splinter
+101.45.6.254 -> Leonardo
+166.1.33.5 -> Splinter
+166.1.0.7 -> Splinter***
+
+**Question 8**
+
+***Additionally to previously defined routers we now have Donatello which covers addresses 166.1.0.0 to 166.1.255.255 and Raphael which covers 166.1.0.0 to 166.1.15.255.   
+Therefore:
+101.6.0.3 -> Michelangelo
+101.6.0.4 -> Splinter
+101.45.6.254 -> Leonardo
+166.1.33.5 -> Donatello
+166.1.0.7 -> Raphael according to longest matching prefix rule.
