@@ -157,12 +157,87 @@ Encode 1010110 using an (11, 7) Hamming Code with even parity.
 
 Assuming a (15,11)-Hamming Code using odd parity, we receive 000110111010001. What is the error syndrome of this message? What should the original message be if there is at most one error?
 
-`0 0 0 1 1 0 1 1 1 0 1 0 0 0 1`
+`0 0 0 1 1 0 1 1 1 0 1 0 0 0 1`   
 `1 2 3 4 5 6 7 8 9 A B C D E F`
 
-bit `1` is 0, assuming odd parity should be `0`
-bit `2` is 0, assuming odd parity should be `0`
-bit `4` is 1, assuming odd parity should be `0`
-bit `8` is 1, assuming odd parity should be `0`
+bit `1` is 0, assuming odd parity should be `0`   
+bit `2` is 0, assuming odd parity should be `0`   
+bit `4` is 1, assuming odd parity should be `0`   
+bit `8` is 1, assuming odd parity should be `0`   
 
 ***The syndrome of the message is 12, original message was 000110111011001***
+
+## Quiz 2
+
+**Question 1**
+
+Which of the following options for the physical land data link layer has an IEEE standard (as of 2020)?
+
+***Ethernet***
+
+**Question 2**
+
+What is the disadvantage of using byte stuffng with both flag and escape bytes?
+
+***The protocol has a large overhead compared to bit stuffng***
+
+**Question 3**
+
+You want to send a frame to another machine. The data link layer uses flag bytes in combination with byte stuffing to delimit frames. The payload before byte stuffing is 
+
+`0xaa 0xcc 0xbb 0xaa 0xdd 0xdd 0xdd 0xff`
+
+You know that this payload does not contain escape bytes, but may contain flag bytes. Before passing the frame to the physical layer, the data link layer applies byte stuffing, changing the payload from 8 to 10 bytes. What is the flag byte used by this data link layer protocol?
+
+***None of the above; all of the options are impossible because framing by default adds two flag bytes (at the beginning and end of the frame), because 0xbb, 0xcc, 0xdd all appear in the payload it means that at least one escape byte would need to be added but we know this cannot happen because final length is 10 bytes.
+
+**Question 4**
+
+What is the main disadvantage of Stop-and-Wait?
+
+***The protocol has a low throughput as it spends a lot of time waiting for acknowledgements***
+
+**Question 5**
+
+Consider a network with 20 deployed nodes that tell the city lamps when to turn on the lights after sunset.  Each of the nodes uses ALOHA as channel allocation protocol. Assume that all the nodes detect the event (sunset) at the same time and they send the frame at the same fixed moment in time. Retransmissions in case of collision also occur at the same moment in time. What is the expected throughput of the network
+
+***Expected throughput is 0%, if nodes send the frame at exactly the same time then collisions will always be happening.***
+
+**Question 5**
+
+Why does slotted ALOHA have nearly double the throughput of pure ALOHA?
+
+***Stations are synchronized in order to restrict the transmissions to slots. Therefore, the vulnerable period for slotted Aloha is halved***
+
+**Question 6**
+
+Why does the data link layer not always use p-persistent CSMA with a low p for channel allocation?
+
+***p-persistent CSMA with a low value of p has a higher latency than 1-persistant CSMA***
+
+**Question 7**
+
+In the figure on the last slide.  A, B, C, and D are wireless stations. Their radio range is limited to their direct neighbours. All stations send on the same channel. Consider the following scenarios, each consisting of two concurrent transmissions (no MACA): 
+1) A is transmitting to B, C is transmitting to B.
+2) A is transmitting to B, C is transmitting to D.
+3) A is transmitting to B, D is transmitting to C.
+
+Which of them leads to two successful transmissions?
+
+***Only scenario 3 results in two successful transmissions***
+
+**Question 8**
+
+Let stations A, B, and C be such that B is in the range of both A and C and vice versa. However, A and C are not in range of each other. A and C both send a RTS frame to B at the same time using the same channel.  What happens next?
+
+***The RTS frames collide. B does not receive either RTS frame .A and C will try again later.***
+
+**Question 9**
+
+Which of the following is NOT a collision-free protocol?
+a)Basic bit-map
+b)Binary countdown
+c)Tag heist
+d)Token ring
+
+***Answer c, tag heist***
