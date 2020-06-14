@@ -283,6 +283,7 @@ Responsible for a _reliable_ (or sometimes _unreliable_) data stream over an _un
 * initial sequence number is based on _time-of-day clock_ (keeps working even in case of crashes).
 * sequence number `S(i) = S(i-1) + #bytesSent`.
 * sequence numbers which at some particular time cannot be chosen (because a packet with that number can still be in the network) belong to the _forbidden region_, in TCP sequence numbers need to be renegotiated after around four hours.
+* if an ack is piggybacked with a message, then ack flag stays set to 0.
 
 **Three-way handshake** is used to negotiate initial connection:
 1. Party A sends a _connection request_ containing its initial sequence number `x`.
@@ -329,15 +330,30 @@ Most popular protocols of transport layer are ***UDP*** and ***TCP*** (but other
 * only four header fields (source port, destination port, UDP length, UDP checksum).
 * very basic error control.
 * does not provide flow control, congestion control and retransmissions.
+* applications can trigger retransmission based on checksum.
 * works well with multiplayer games, VoIP, video streaming (a lot faster than TCP).
 * described in RFC768
 
 **Transmission Control Protocol**:
 * provides a ***reliable end-to-end byte stream*** over an unreliable network.
-* header includes fields similar to UDP but also sequence number and ack number.
+* header includes many more fields than UDP including:
+   * general - source port, destination port, header length.
+   * message type flags - SYN, ACK, FIN.
+   * error detection - sequence number, acknowledgement number, TCP checksum.
+   * flow control - window size.
 * in total number of header fields is 15 + options and data.
 * more than 10 RFCs and a summary in RFC4614.
 
+**UDP/TCP checksum** is calculated in 16-bit 1's complement:
+Sender:
+   1. divide data into 16-bit words.
+   2. compute bitwise XOR over all words.
+   3. take 1's complement of result (flip all bits).
+Receiver:
+   1. divide header _including checksum_ and body into 16-bit words.
+   2. compute bitwise XOR over all words.
+   3. if not all bits are set to 1, then an error has happened.
+   
 **TCP implementations**:
 * every data byte has its own sequence number, based on clock with additional randomization.
 * performance improvement by fast retransmission - resend immediately when acks come out of order.
