@@ -585,4 +585,51 @@ RSA can be used for signatures as well.
 
 **Hash-then-Sign** is faster than calculating a signature on the full message, only the hash function output is signed by Alice. Bob can verify the same way because hash functions are public.
 
+**Certificate authority** is an entity in ***public key infrastructure*** hierarchical scheme which signs public keys from others under the assumption that everybody trusts the CA. Most popular certificate format standard is ***X.509*** which was designed to be very easy to read, it specifies an encoding method and a number of fields including version, serial number, issuer, etc. In _PKI_ root authority confirms the identity of regional authorities, which in turn verify central authorities (_chain of trust_). Companies and institutions in general obtain certificates from CA.
+
+**Cryptanalysis techniques**:
+* differential - inspecting the difference in encryption behavior for small changes in plaintext.
+* linear - XOR plain and ciphertext, imbalance in 0's and 1's can reduce the work needed to break cipher.
+* inspecting power consumption.
+* inspecting timings.
+
+**How security proofs go wrong**:
+* security proof is wrong.
+* implementation of the protocol is wrong.
+* model of the proof doesn't take into account some real-world aspects.
+
+**IP Security** is a protocol used to provide secure encrypted communication over an IP network:
+* defines the _Encapsulating Security Payload_ header.
+* ensures _confidentiality_, _integrity_, and _protection agains replay attacks_
+* IPsec encapsulates an IP packet in two modes:
+   * transport mode - ESP header is added after IP header, TCP header an payload get encrypted, and HMAC is calculated and added at the end; IP header isn't changed; transport mode ensures _message confidentiality_, _message integrity_ and _authentication_.
+   * tunnel mode - create a new IP header in front of ESP header; old IP header, TCP header and the payload get encrypted; HMAC is calculated and added at the end; tunnel mode additionally provides a (low degree) of _anonymity_ (because communication between VPN gateways happens based on their IPs).
+   
+_Tunneling_ is sending messages of one protocol inside messages of another protocol ***outside of their usual stack order***. Tunneling is used in _Virtual Private Networks_ which enable secure communication over an untrusted network. On the border between trusted and untrusted network a _VPN gateway_ replaces IPs from nodes in trusted network with their own.
+
+**Transport Layer Security**:
+* confidentiality and integrity on top of (usually) TCP.
+* mostly used when communicating with web servers and integrated in browsers by default.
+* successor of _Secure Socket Layer_
+* establishing a TLS connection:
+   1. Alice sends her TLS version and known cyphersuites (encryption + MAC algorithms) to the server.
+   2. server sends back the chosen version, ciphersuites and its X.509 certificate chain.
+   3. Alice verifies the identity of server.
+   4. exchange of symmetric key (for encryption and MACs) usually with TLS' version of hybrid exchange.
+* TLS ensures:
+   * _server authentication_, 
+   * _message integrity_,
+   * _message confidentiality_,
+   * optionally _client authentication_.
+   
+**DNS spoofing**:
+* server provides incorrect IP address, in particular IP of a malicious server.
+* tricking a DNS server into serving a malicious IP address is called _DNS spoofing_.
+* a DNS cache with malicious entry is called a _poisoned cache_.
+* an established solution for this problem is ***DNSSEC*** which uses hierarchical _PKI_ and digital signatures similar to TLS (but without encryption).
+
+**Multi-factor authentication** is used to prove identity using multiple pieces of evidence:
+* something you know;
+* something you have;
+* something you are;
 
