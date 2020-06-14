@@ -372,3 +372,17 @@ Therefore:
 
 ***Bitmasks are used to select certain bits***
 
+## Tutorial 3
+
+**Question 1**
+
+***Third segment sent by Alice has number `15 + 1 + 23 + 567 = 606`***
+
+**Question 2**
+
+***Acknowledgement number of Alice's third segment would be `102 + 1 + 71 = 174`***
+
+**Question 3**
+
+***If the protocol uses 20-bit sequence numbers then the sequence number wraps after 2^20 ticks. If the clock ticks 2^10 times per second, then the number of seconds before wrap-around is 2^20 / 2^10 = 1024.***
+
