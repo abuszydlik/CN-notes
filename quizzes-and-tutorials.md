@@ -321,3 +321,54 @@ Therefore:
 101.45.6.254 -> Leonardo
 166.1.33.5 -> Donatello
 166.1.0.7 -> Raphael according to longest matching prefix rule.
+
+## Quiz 3
+
+**Question 1**
+
+***UDP does not re-order***
+
+**Question 2**
+
+***RED reacts to congestion by dropping random packets***
+
+**Question 3**
+
+***Process servers should be used for apps that are hardly used and reasonably tolerant to latency***
+
+**Question 4**
+
+***The TCP header relies on the network layer to encapsulate the transport layer header in the body of the IP packet***
+
+**Question 5**
+
+***After receiving an Explicit Congestion Notification and provided that TCP is used, the sender is supposed to lower the rate of sending traffic by a multiplicative factor.***
+
+**Question 6**
+
+***In terms of Quality of Service metrics, streaming videos requires highest bandwidth with strict requirements on jitter***
+
+**Question 7**
+
+***The main advantage of transparent fragmentation is that it allows intermediate networks to flawlessly process the fragment even if they have different requirements on maximal packet size.***
+
+**Question 8**
+
+***Flow control handles destination bottlenecks, congestion control handles network bottlenecks.***
+
+**Question 9**
+
+***None of the above, segments could have arrived out of order.***
+
+**Question 10**
+
+***With TCP jitter is not prevented from occurring on the connection.***
+
+**Question 11*
+
+***The third segment has number `4 + 1 + 40 + 56 = 101`***
+
+**Question 12**
+
+***Bitmasks are used to select certain bits***
+
