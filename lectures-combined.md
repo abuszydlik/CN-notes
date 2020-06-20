@@ -393,7 +393,7 @@ Receiver:
 * users and _message transfer agents_ use _SMTP_ with Extensions to get mail from source to destination.
 * email address is resolved to IP with DNS.
 
-**Simple Mail Transfer Protocol** is ASCII-based and in basic version doesn't support binary data and authentication. **Multipurpose Internet Mail Extensions** are additional headers for transfering different types of data (text, images, video, multipart). When it was introduced servers were not expecting non-ASCII data so all binary streams are encoded Base64 (\[A-Za-z0-9+/]) where 6 bits are translated into 1 character (if the number of bits in bitstream isn't divisible by 6 it is padded with 00's represented with "=").
+**Simple Mail Transfer Protocol** is ASCII-based and in basic version doesn't support binary data and authentication. **Multipurpose Internet Mail Extensions** are additional headers for transfering different types of data (text, images, video, multipart). When it was introduced servers were not expecting non-ASCII data so all binary streams are encoded Base64 (\[A-Za-z0-9+/]) where 6 bits are translated into 1 character (if the number of bits in bitstream isn't divisible by 6 it is padded with 00's). The resulting character stream is then padded with '='s until its length is divisible by 4.
 
 **Internet Message Access Protocol** sends commands to mail server to manipulate mailboxes, commonly:
 * LOGIN - log into server;
